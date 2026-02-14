@@ -1,167 +1,275 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Capsulas Emocionales</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cápsulas</title>
 
 <style>
-    /* colores y tipografía */
-    body {
-        margin: 0;
-        padding: 0;
-        font-family: Arial, sans-serif;
-        background: #8B0000; /* rojo rubí */
-        color: #fff;
-        text-align: center;
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-    }
+  :root{
+    --ruby:#7a0016;
+    --panel: rgba(0,0,0,.35);
+    --text: rgba(255,255,255,.92);
+    --muted: rgba(255,255,255,.65);
+    --line: rgba(255,255,255,.12);
+  }
 
-    .capa {
-        margin: auto;
-        max-width: 700px;
-        padding: 30px 20px;
-        border-radius: 8px;
-        background: rgba(0, 0, 0, 0.4);
-        display: none;
-    }
+  body{
+    margin:0;
+    min-height:100vh;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    background: var(--ruby);
+    color: var(--text);
+    display:flex;
+    justify-content:center;
+  }
 
-    .visible {
-        display: block;
-    }
+  .wrap{
+    width:min(760px, 92vw);
+    padding: 32px 0 80px;
+  }
 
-    .numero {
-        font-size: 3rem;
-        font-weight: bold;
-        color: #000;
-    }
+  .intro{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 22px 18px;
+    margin-bottom: 18px;
+    text-align:left;
+  }
+  .intro h1{
+    margin:0 0 8px;
+    font-size: 18px;
+    letter-spacing:.2px;
+  }
+  .intro p{
+    margin:0;
+    color: var(--muted);
+    line-height:1.5;
+  }
 
-    .texto {
-        font-size: 1.5rem;
-        margin-top: 10px;
-        color: #fff;
-    }
+  .card{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 26px 18px;
+    margin: 14px 0;
+    text-align:center;
+    backdrop-filter: blur(2px);
+  }
 
-    .gate {
-        margin-top: 20px;
-        font-size: 1.2rem;
-        color: #fff;
-    }
+  .num{
+    font-size: 44px;
+    letter-spacing: 2px;
+    font-weight: 800;
+    color: rgba(255,255,255,.22);
+    margin-bottom: 8px;
+    user-select:none;
+  }
 
-    .audio-final {
-        margin-top: 30px;
-    }
+  .text{
+    font-size: 20px;
+    line-height: 1.45;
+    padding: 0 6px;
+  }
 
-    button.play {
-        padding: 12px 25px;
-        font-size: 1rem;
-        cursor: pointer;
-        border: none;
-        border-radius: 5px;
-        background: #fff;
-        color: #8B0000;
-        font-weight: bold;
-    }
+  .gate{
+    border-radius: 14px;
+    padding: 18px 16px;
+    margin: 12px 0 18px;
+    border: 1px dashed rgba(255,255,255,.25);
+    color: rgba(255,255,255,.78);
+    text-align:left;
+  }
+  .gate b{ color: rgba(255,255,255,.95); }
+
+  .meta{
+    margin-top: 10px;
+    font-size: 13px;
+    color: rgba(255,255,255,.55);
+  }
+
+  .audio{
+    margin-top: 14px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    align-items:center;
+  }
+
+  .btn{
+    border: 1px solid rgba(255,255,255,.35);
+    background: rgba(255,255,255,.92);
+    color: #3a0010;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor:pointer;
+  }
+  .btn:active{ transform: translateY(1px); }
+
+  .small{
+    font-size: 13px;
+    color: rgba(255,255,255,.65);
+  }
 </style>
 </head>
 
 <body>
+  <div class="wrap">
 
-<!-- 14 capas -->
-<div id="capa1" class="capa">
-    <div class="numero">01</div>
-    <div class="texto">Cuando pienso en ti, mi día se vuelve sol.</div>
-</div>
-
-<div id="capa2" class="capa">
-    <div class="numero">02</div>
-    <div class="texto">Aquí va tu frase para la Capa 02.</div>
-</div>
-
-<div id="capa3" class="capa">
-    <div class="numero">03</div>
-    <div class="texto">Aquí va tu frase para la Capa 03.</div>
-</div>
-
-<!-- … hasta capa14 -->
-<div id="capa14" class="capa">
-    <div class="numero">14</div>
-    <div class="texto">Llegamos al final… gracias por estar aquí.</div>
-
-    <!-- Botón para audio final -->
-    <div class="audio-final">
-        <button class="play" onclick="document.getElementById('audioMensaje').play()">
-            ▶ Escuchar mensaje final
-        </button>
-        <audio id="audioMensaje">
-            <source src="mensaje-final.mp3" type="audio/mpeg">
-            <!-- Pon aquí tu audio final renombrado -->
-        </audio>
+    <div class="intro">
+      <h1>Hoy no quiero que leas todo de golpe.</h1>
+      <p>Quiero que lo vivas conmigo. Regresa cuando el candado te lo pida.</p>
+      <div class="meta" id="tzMeta"></div>
     </div>
-</div>
 
-<!-- Gate general -->
-<div id="gateMensajes" class="capa visible">
-    <div class="texto" id="gateTexto"></div>
-</div>
+    <!-- Contenedor donde JS va a pintar capas + gates -->
+    <div id="timeline"></div>
+
+  </div>
 
 <script>
-    const ahora = new Date();
-    const horaActual = ahora.getHours();
-    const minutoActual = ahora.getMinutes();
+  // =========================
+  // CONFIG
+  // =========================
+  // Arranca 09:14 y luego cada hora, 14 capas total
+  const START_HOUR = 9;
+  const START_MIN  = 14;
+  const TOTAL = 14;
 
-    // FUNCION QUE DETERMINA SI YA ES LA HORA
-    function esHoraDe(hora, minuto) {
-        if (horaActual > hora) return true;
-        if (horaActual === hora && minutoActual >= minuto) return true;
-        return false;
+  // Textos (edítalos)
+  const CAPAS = [
+    "Cuando pienso en ti, mi día se vuelve sol.",
+    "Aquí va tu frase para la Capa 02.",
+    "Aquí va tu frase para la Capa 03.",
+    "Aquí va tu frase para la Capa 04.",
+    "Aquí va tu frase para la Capa 05.",
+    "Aquí va tu frase para la Capa 06.",
+    "Aquí va tu frase para la Capa 07.",
+    "Aquí va tu frase para la Capa 08.",
+    "Aquí va tu frase para la Capa 09.",
+    "Aquí va tu frase para la Capa 10.",
+    "Aquí va tu frase para la Capa 11.",
+    "Aquí va tu frase para la Capa 12.",
+    "Aquí va tu frase para la Capa 13.",
+    "Llegamos al final… gracias por estar aquí."
+  ];
+
+  // Si quieres que el audio solo aparezca en capa 14:
+  const AUDIO_FILE = "mensaje-final.mp3"; // súbelo al repo con ese nombre
+  const AUDIO_LABEL = "▶ Escuchar mensaje final";
+
+  // =========================
+  // HELPERS
+  // =========================
+  const pad2 = n => String(n).padStart(2,"0");
+
+  function buildUnlockTimes(baseDate){
+    // baseDate es "hoy" en el navegador del usuario
+    const times = [];
+    for(let i=0;i<TOTAL;i++){
+      const d = new Date(baseDate);
+      d.setHours(START_HOUR + i, START_MIN, 0, 0);
+      times.push(d);
+    }
+    return times;
+  }
+
+  function formatTime(d){
+    return `${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+  }
+
+  function now(){
+    return new Date();
+  }
+
+  // =========================
+  // RENDER
+  // =========================
+  function render(){
+    const t = document.getElementById("timeline");
+    t.innerHTML = "";
+
+    const current = now();
+    const unlockTimes = buildUnlockTimes(current);
+
+    // Encuentra cuántas capas ya están desbloqueadas
+    let unlockedCount = 0;
+    for(let i=0;i<unlockTimes.length;i++){
+      if(current >= unlockTimes[i]) unlockedCount = i+1;
     }
 
-    // CONFIGURACIÓN DE HORAS
-    const horarios = [
-        {id: "capa1", hora: 9, minuto:14},
-        {id: "capa2", hora:10, minuto:14},
-        {id: "capa3", hora:11, minuto:14},
-        {id: "capa4", hora:12, minuto:14},
-        {id: "capa5", hora:13, minuto:14},
-        {id: "capa6", hora:14, minuto:14},
-        {id: "capa7", hora:15, minuto:14},
-        {id: "capa8", hora:16, minuto:14},
-        {id: "capa9", hora:17, minuto:14},
-        {id: "capa10", hora:18, minuto:14},
-        {id: "capa11", hora:19, minuto:14},
-        {id: "capa12", hora:20, minuto:14},
-        {id: "capa13", hora:21, minuto:14},
-        {id: "capa14", hora:22, minuto:14},
-    ];
+    // Si ninguna desbloqueada todavía: solo gate hacia la primera
+    if(unlockedCount === 0){
+      const g = document.createElement("div");
+      g.className = "gate";
+      g.innerHTML = `🔒 <b>La primera capa se desbloquea a las ${formatTime(unlockTimes[0])}.</b><br>
+      No hagas scroll mental todavía 😌`;
+      t.appendChild(g);
+      return;
+    }
 
-    // ITERAR Y MOSTRAR CAPAS SEGÚN HORA
-    let algunaVisible = false;
+    // Pinta capas desbloqueadas + gate hacia la siguiente (si aún falta)
+    for(let i=0;i<unlockedCount;i++){
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+        <div class="num">${pad2(i+1)}</div>
+        <div class="text">${CAPAS[i] ?? ""}</div>
+      `;
+      t.appendChild(card);
 
-    for (let i = 0; i < horarios.length; i++) {
-        const capaInfo = horarios[i];
-        if (esHoraDe(capaInfo.hora, capaInfo.minuto)) {
-            document.getElementById(capaInfo.id).classList.add("visible");
-            algunaVisible = true;
+      const nextIndex = i+1;
+
+      // Si esta NO es la última capa desbloqueada, no pongas gate (ya está la siguiente visible)
+      // Si esta ES la última desbloqueada y aún quedan capas, pon gate hacia la próxima hora
+      if(i === unlockedCount - 1 && nextIndex < TOTAL){
+        const g = document.createElement("div");
+        g.className = "gate";
+        g.innerHTML = `🔒 <b>La siguiente capa se desbloquea a las ${formatTime(unlockTimes[nextIndex])}.</b><br>
+        Regresa en ese momento (o quédate aquí, se actualiza sola).`;
+        t.appendChild(g);
+      }
+    }
+
+    // Si ya llegó a la 14, agrega audio bonito al final
+    if(unlockedCount >= TOTAL){
+      const audioBox = document.createElement("div");
+      audioBox.className = "card";
+      audioBox.innerHTML = `
+        <div class="audio">
+          <button class="btn" id="playBtn">${AUDIO_LABEL}</button>
+          <div class="small">Tip: si no suena, revisa que el archivo exista y se llame exactamente <b>${AUDIO_FILE}</b>.</div>
+          <audio id="finalAudio" preload="auto">
+            <source src="${AUDIO_FILE}" type="audio/mpeg">
+          </audio>
+        </div>
+      `;
+      t.appendChild(audioBox);
+
+      // hook del botón
+      setTimeout(() => {
+        const btn = document.getElementById("playBtn");
+        const aud = document.getElementById("finalAudio");
+        if(btn && aud){
+          btn.onclick = async () => {
+            try { await aud.play(); }
+            catch(e){ alert("Tu navegador bloqueó el audio. Intenta de nuevo tocando el botón."); }
+          };
         }
+      }, 0);
     }
+  }
 
-    // SI NINGUNA CAPA ES VISIBLE, MUESTRA GATE (mensaje de espera)
-    if (!algunaVisible) {
-        let proxima = horarios.find(h => !esHoraDe(h.hora, h.minuto));
-        if (proxima) {
-            const gateTexto = document.getElementById("gateTexto");
-            gateTexto.textContent = "🔒 La primera capa se desbloquea a las " 
-                + String(proxima.hora).padStart(2,"0") + ":" 
-                + String(proxima.minuto).padStart(2,"0") + ".";
-        }
-    } else {
-        document.getElementById("gateMensajes").style.display = "none";
-    }
+  // Meta de zona horaria (para evitar confusiones con distancia)
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  document.getElementById("tzMeta").textContent = `Horario según el reloj de este dispositivo (${tz}).`;
+
+  // Render inicial y refresco automático (dinámico sin refresh)
+  render();
+  setInterval(render, 10_000); // cada 10 segundos
 
 </script>
-
 </body>
 </html>
