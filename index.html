@@ -135,7 +135,7 @@
   // =========================
   // Arranca 09:14 y luego cada hora, 14 capas total
   const START_HOUR = 20;
-  const START_MIN  = 10;
+  const START_MIN  = 14;
   const TOTAL = 14;
 
   // Textos (edítalos)
@@ -170,7 +170,7 @@
     const times = [];
     for(let i=0;i<TOTAL;i++){
       const d = new Date(baseDate);
-      d.setHours(START_HOUR, START_MIN, i, 0);
+      d.setHours(START_HOUR, START_MIN + i, 0, 0);
       times.push(d);
     }
     return times;
@@ -273,4 +273,5 @@
 </script>
 </body>
 </html>
+
 
