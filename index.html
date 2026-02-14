@@ -7,7 +7,6 @@
 
 <style>
   :root{
-    --ruby:#7a0016;
     --panel: rgba(0,0,0,.35);
     --text: rgba(255,255,255,.92);
     --muted: rgba(255,255,255,.65);
@@ -18,7 +17,7 @@
     margin:0;
     min-height:100vh;
     font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-    background: var(--ruby);
+    background: radial-gradient(circle at 50% 20%, #9b0022 0%, #6d0015 60%, #4a000f 100%);
     color: var(--text);
     display:flex;
     justify-content:center;
@@ -34,8 +33,9 @@
     border: 1px solid var(--line);
     border-radius: 14px;
     padding: 22px 18px;
-    margin-bottom: 18px;
+    margin-bottom: 14px;
     text-align:left;
+    backdrop-filter: blur(2px);
   }
   .intro h1{
     margin:0 0 8px;
@@ -46,6 +46,34 @@
     margin:0;
     color: var(--muted);
     line-height:1.5;
+  }
+  .meta{
+    margin-top: 10px;
+    font-size: 13px;
+    color: rgba(255,255,255,.55);
+  }
+
+  .progressWrap{
+    margin: 10px 0 20px;
+  }
+  .progressTop{
+    font-size: 13px;
+    color: rgba(255,255,255,.65);
+    margin-bottom: 6px;
+    letter-spacing: .5px;
+  }
+  .progressBar{
+    height: 4px;
+    width: 100%;
+    background: rgba(255,255,255,.15);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  #progressFill{
+    height: 100%;
+    width: 0%;
+    background: rgba(255,255,255,.85);
+    transition: width .6s ease;
   }
 
   .card{
@@ -58,19 +86,22 @@
     backdrop-filter: blur(2px);
   }
 
-  /*.num{
-    font-size: 44px;
+  /* Número más elegante */
+  .num{
+    font-size: 46px;
     letter-spacing: 2px;
-    font-weight: 800;
-    color: rgba(255,255,255,.22);
+    font-weight: 900;
+    color: rgba(255,255,255,.18);
+    text-shadow: 0 1px 0 rgba(0,0,0,.25);
     margin-bottom: 8px;
     user-select:none;
-  }*/
+  }
 
   .text{
     font-size: 20px;
-    line-height: 1.45;
-    padding: 0 6px;
+    line-height: 1.5;
+    text-align: left;
+    padding: 0 10px;
   }
 
   .gate{
@@ -80,14 +111,26 @@
     border: 1px dashed rgba(255,255,255,.25);
     color: rgba(255,255,255,.78);
     text-align:left;
+    transition: box-shadow .35s ease;
+    background: rgba(0,0,0,.10);
+    backdrop-filter: blur(2px);
   }
   .gate b{ color: rgba(255,255,255,.95); }
 
-  .meta{
-    margin-top: 10px;
-    font-size: 13px;
-    color: rgba(255,255,255,.55);
+  .gateTop{ font-size: 15px; margin-bottom: 6px; }
+  .gateMid{ color: rgba(255,255,255,.75); margin-bottom: 10px; }
+  .gateBottom{ font-size: 13px; color: rgba(255,255,255,.62); }
+
+  .ghost{
+    margin-top: 12px;
+    border-radius: 12px;
+    padding: 9px 12px;
+    border: 1px solid rgba(255,255,255,.28);
+    background: rgba(0,0,0,.12);
+    color: rgba(255,255,255,.88);
+    cursor: pointer;
   }
+  .ghost:active{ transform: translateY(1px); }
 
   .audio{
     margin-top: 14px;
@@ -111,43 +154,24 @@
   .small{
     font-size: 13px;
     color: rgba(255,255,255,.65);
+    text-align:center;
+    line-height: 1.35;
   }
 
-/* Animación solo cuando JS pone .just-revealed */
-.just-revealed{
-  animation: pop .55s ease both;
-}
-@keyframes pop{
-  from { opacity:0; transform: translateY(10px); }
-  to   { opacity:1; transform: translateY(0); }
-}
+  /* Animación solo cuando JS agrega la clase */
+  .just-revealed{
+    animation: pop .55s ease both;
+  }
+  @keyframes pop{
+    from { opacity:0; transform: translateY(10px); }
+    to   { opacity:1; transform: translateY(0); }
+  }
 
-/* Número más elegante: outline vibe */
-.num{
-  font-size: 46px;
-  letter-spacing: 2px;
-  font-weight: 900;
-  color: rgba(255,255,255,.18);
-  text-shadow: 0 1px 0 rgba(0,0,0,.25);
-}
-
-/* Gate layout más “diseñado” */
-.gateTop{ font-size: 15px; margin-bottom: 6px; }
-.gateMid{ color: rgba(255,255,255,.75); margin-bottom: 10px; }
-.gateBottom{ font-size: 13px; color: rgba(255,255,255,.62); }
-
-/* Botón ghost para actualizar */
-.ghost{
-  margin-top: 12px;
-  border-radius: 12px;
-  padding: 9px 12px;
-  border: 1px solid rgba(255,255,255,.28);
-  background: rgba(0,0,0,.12);
-  color: rgba(255,255,255,.88);
-  cursor: pointer;
-}
-.ghost:active{ transform: translateY(1px); 
-}
+  @media (max-width: 480px){
+    .text{ font-size: 18px; }
+    .num{ font-size: 38px; }
+    .intro{ padding: 18px 14px; }
+  }
 </style>
 </head>
 
@@ -169,16 +193,18 @@
       </div>
     </div>
 
-    <!-- Contenedor donde JS va a pintar capas + gates -->
     <div id="timeline"></div>
-
   </div>
 
 <script>
+  // =========================
+  // CONFIG
+  // =========================
   const START_HOUR = 9;
   const START_MIN  = 14;
   const TOTAL = 14;
 
+  // Edita tus capas aquí
   const CAPAS = [
     "Cuando pienso en ti, mi día se vuelve sol.",
     "Aquí va tu frase para la Capa 02.",
@@ -196,9 +222,11 @@
     "Llegamos al final… gracias por estar aquí."
   ];
 
-  const AUDIO_FILE = "mensaje-final.mp3";
+  // Audio final
+  const AUDIO_FILE = "mensaje-final.mp3"; // súbelo al repo con este nombre
   const AUDIO_LABEL = "▶ Escuchar mensaje final";
 
+  // Microcopy gates (13 gates entre 14 capas)
   const GATE_LINES = [
     "No te me adelantes 😌",
     "Guárdame tantito.",
@@ -215,6 +243,9 @@
     "Última recta."
   ];
 
+  // =========================
+  // HELPERS
+  // =========================
   const pad2 = n => String(n).padStart(2, "0");
   const now = () => new Date();
 
@@ -242,114 +273,165 @@
     return `${ss}s`;
   }
 
-  function gateCopy(i){
-    // i es el índice de la siguiente capa (0-based)
-    // usamos mensajes distintos por gate, ciclando si hiciera falta
-    return GATE_LINES[Math.max(0, Math.min(GATE_LINES.length-1, i-1))] || "Regresa en un ratito.";
+  function gateCopy(nextIndex){
+    // nextIndex: índice 0-based de la capa que viene
+    if(nextIndex <= 0) return GATE_LINES[0];
+    return GATE_LINES[Math.min(GATE_LINES.length-1, nextIndex-1)] || "Regresa en un ratito.";
   }
 
-  function render(){
-    const t = document.getElementById("timeline");
-    t.innerHTML = "";
+  // Persistencia (para que NO reanime tras refresh)
+  const SEEN_KEY = "caps_seen_layers_v1";
+  function loadSeen(){
+    try { return new Set(JSON.parse(localStorage.getItem(SEEN_KEY) || "[]")); }
+    catch { return new Set(); }
+  }
+  function saveSeen(set){
+    try { localStorage.setItem(SEEN_KEY, JSON.stringify([...set])); } catch {}
+  }
+  const seen = loadSeen();
 
+  // =========================
+  // DOM + BUILD ONCE
+  // =========================
+  const timeline = document.getElementById("timeline");
+  const unlockTimes = buildUnlockTimes(now()); // “hoy” en el dispositivo del usuario
+  const layerEls = [];
+
+  function build(){
+    timeline.innerHTML = "";
+
+    // Gate (uno solo) que se actualiza según la siguiente capa
+    const gate = document.createElement("div");
+    gate.className = "gate";
+    gate.id = "mainGate";
+    gate.innerHTML = `
+      <div class="gateTop" id="gateTop"></div>
+      <div class="gateMid" id="gateMid"></div>
+      <div class="gateBottom" id="gateBottom"></div>
+      <button class="ghost" id="refreshBtn" type="button">Actualizar</button>
+    `;
+    timeline.appendChild(gate);
+
+    // 14 capas (creadas una sola vez, ocultas al inicio)
+    for(let i=0;i<TOTAL;i++){
+      const card = document.createElement("div");
+      card.className = "card";
+      card.style.display = "none";
+      card.innerHTML = `
+        <div class="num">${pad2(i+1)}</div>
+        <div class="text">${CAPAS[i] ?? ""}</div>
+      `;
+      timeline.appendChild(card);
+      layerEls.push({ card, index: i });
+    }
+
+    // Audio card (sale hasta el final)
+    const audioCard = document.createElement("div");
+    audioCard.className = "card";
+    audioCard.id = "audioCard";
+    audioCard.style.display = "none";
+    audioCard.innerHTML = `
+      <div class="audio">
+        <button class="btn" id="playBtn" type="button">${AUDIO_LABEL}</button>
+        <div class="small">Si no suena, revisa que exista <b>${AUDIO_FILE}</b> en el repo.</div>
+        <audio id="finalAudio" preload="auto">
+          <source src="${AUDIO_FILE}" type="audio/mpeg">
+        </audio>
+      </div>
+    `;
+    timeline.appendChild(audioCard);
+
+    // hooks
+    document.getElementById("refreshBtn").onclick = () => tick(true);
+
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    document.getElementById("tzMeta").textContent = `Horario según este dispositivo (${tz}).`;
+
+    document.getElementById("playBtn").onclick = async () => {
+      const aud = document.getElementById("finalAudio");
+      try { await aud.play(); }
+      catch(e){ alert("Tu navegador bloqueó el audio. Toca de nuevo el botón."); }
+    };
+  }
+
+  // =========================
+  // TICK (updates only)
+  // =========================
+  function tick(force=false){
     const current = now();
-    const unlockTimes = buildUnlockTimes(current);
 
+    // cuántas capas ya están desbloqueadas
     let unlockedCount = 0;
     for(let i=0;i<unlockTimes.length;i++){
       if(current >= unlockTimes[i]) unlockedCount = i+1;
     }
 
-    // Ninguna todavía: gate hacia la primera
-    if(unlockedCount === 0){
-      const next = unlockTimes[0];
-      const g = document.createElement("div");
-      g.className = "gate";
-      g.innerHTML = `
-        <div class="gateTop">🔒 <b>Primera capa a las ${formatTime(next)}.</b></div>
-        <div class="gateMid">${gateCopy(0)}</div>
-        <div class="gateBottom">Faltan <b>${msToCountdown(next - current)}</b></div>
-        <button class="ghost" id="refreshBtn">Actualizar</button>
-      `;
-      t.appendChild(g);
-      hookRefresh();
-      return;
-    }
+    // Progreso visual
+    const progressText = document.getElementById("progressText");
+    const progressFill = document.getElementById("progressFill");
+    progressText.textContent = `Capa ${pad2(unlockedCount)} de ${TOTAL}`;
+    progressFill.style.width = `${(unlockedCount / TOTAL) * 100}%`;
 
-    // Capas desbloqueadas
-    for(let i=0;i<unlockedCount;i++){
-      const card = document.createElement("div");
-      card.className = "card reveal";
-      card.innerHTML = `
-        <div class="num">${pad2(i+1)}</div>
-        <div class="text">${CAPAS[i] ?? ""}</div>
-      `;
-      t.appendChild(card);
+    // Mostrar capas desbloqueadas sin recrearlas
+    for(const item of layerEls){
+      const { card, index } = item;
+      const shouldBeVisible = index < unlockedCount;
 
-      const nextIndex = i+1;
+      if(shouldBeVisible && card.style.display === "none"){
+        card.style.display = "block";
 
-      // Gate solo después de la última visible y si falta algo
-      if(i === unlockedCount - 1 && nextIndex < TOTAL){
-        const next = unlockTimes[nextIndex];
-        const g = document.createElement("div");
-        g.className = "gate";
-        g.innerHTML = `
-          <div class="gateTop">🔒 <b>Siguiente capa a las ${formatTime(next)}.</b></div>
-          <div class="gateMid">${gateCopy(nextIndex)}</div>
-          <div class="gateBottom">Faltan <b>${msToCountdown(next - current)}</b></div>
-          <button class="ghost" id="refreshBtn">Actualizar</button>
-        `;
-        t.appendChild(g);
-        hookRefresh();
+        // Intensidad del número según avance
+        const intensity = 0.15 + (index / TOTAL) * 0.25;
+        card.querySelector(".num").style.color = `rgba(255,255,255,${intensity})`;
+
+        // Animar solo la primera vez
+        if(!seen.has(index)){
+          card.classList.add("just-revealed");
+          setTimeout(() => card.classList.remove("just-revealed"), 650);
+          seen.add(index);
+          saveSeen(seen);
+        }
       }
     }
 
-    // Audio solo al final
-    if(unlockedCount >= TOTAL){
-      const audioBox = document.createElement("div");
-      audioBox.className = "card";
-      audioBox.innerHTML = `
-        <div class="audio">
-          <button class="btn" id="playBtn">${AUDIO_LABEL}</button>
-          <div class="small">Si no suena, revisa que exista <b>${AUDIO_FILE}</b> en el repo.</div>
-          <audio id="finalAudio" preload="auto">
-            <source src="${AUDIO_FILE}" type="audio/mpeg">
-          </audio>
-        </div>
-      `;
-      t.appendChild(audioBox);
+    // Gate / Audio
+    const gate = document.getElementById("mainGate");
+    const audioCard = document.getElementById("audioCard");
 
-      setTimeout(() => {
-        const btn = document.getElementById("playBtn");
-        const aud = document.getElementById("finalAudio");
-        if(btn && aud){
-          btn.onclick = async () => {
-            try { await aud.play(); }
-            catch(e){ alert("Tu navegador bloqueó el audio. Toca de nuevo el botón."); }
-          };
-        }
-      }, 0);
+    if(unlockedCount >= TOTAL){
+      gate.style.display = "none";
+      audioCard.style.display = "block";
+      return;
+    }
+
+    gate.style.display = "block";
+    audioCard.style.display = "none";
+
+    const nextIndex = (unlockedCount === 0) ? 0 : unlockedCount;
+    const nextTime = unlockTimes[nextIndex];
+    const remaining = nextTime - current;
+
+    document.getElementById("gateTop").innerHTML =
+      (unlockedCount === 0)
+        ? `🔒 <b>Primera capa a las ${formatTime(nextTime)}.</b>`
+        : `🔒 <b>Siguiente capa a las ${formatTime(nextTime)}.</b>`;
+
+    document.getElementById("gateMid").textContent = gateCopy(nextIndex);
+    document.getElementById("gateBottom").innerHTML =
+      `Faltan <b>${msToCountdown(remaining)}</b>`;
+
+    // Gate late (últimos 30s)
+    if(remaining < 30000 && remaining > 0){
+      gate.style.boxShadow = "0 0 15px rgba(255,255,255,.15)";
+    } else {
+      gate.style.boxShadow = "none";
     }
   }
 
-  function hookRefresh(){
-    const btn = document.getElementById("refreshBtn");
-    if(btn) btn.onclick = () => render();
-  }
-
-  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  document.getElementById("tzMeta").textContent = `Horario según este dispositivo (${tz}).`;
-
-  render();
-  setInterval(render, 1000); // ahora sí: contador vivo, cada 1s
+  // init
+  build();
+  tick(true);
+  setInterval(() => tick(false), 1000);
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
